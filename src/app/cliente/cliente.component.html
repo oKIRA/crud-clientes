@@ -1,0 +1,115 @@
+<!-- Importe o Bootstrap para estilização -->
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+<!-- Container principal -->
+<div class="container">
+  <!-- Título da página -->
+  <h1>Gerenciamento de Clientes</h1>
+
+  <!-- Filtros -->
+  <div class="row mb-3">
+    <div class="col-md-6">
+      <input type="text" class="form-control" placeholder="Filtrar por nome" [(ngModel)]="filtroNome">
+    </div>
+    <div class="col-md-6">
+      <div class="form-check">
+        <input type="checkbox" class="form-check-input" id="filtroAtivos" [(ngModel)]="filtroAtivos">
+        <label class="form-check-label" for="filtroAtivos">Somente Ativos</label>
+      </div>
+    </div>
+  </div>
+
+  <!-- Botão para adicionar cliente -->
+  <button class="btn btn-primary mb-3" (click)="toggleAdicionarCliente()">Adicionar Cliente</button>
+
+ <!-- Formulário para adicionar/editar clientes -->
+ <div *ngIf="exibirFormulario" class="card mb-3">
+  <div class="card-header">
+    {{ modoEdicao ? 'Editar Cliente' : 'Adicionar Cliente' }}
+  </div>
+  <div class="card-body">
+    <form (ngSubmit)="adicionarOuEditarCliente()" #clienteForm="ngForm">
+      <!-- Campos obrigatórios -->
+      <div class="form-group">
+        <label for="nome">Nome*</label>
+        <input type="text" id="nome" name="nome" class="form-control" [(ngModel)]="novoCliente.nome" required>
+      </div>
+      <div class="form-group">
+        <label for="tipo">Tipo*</label>
+        <select id="tipo" name="tipo" class="form-control" [(ngModel)]="novoCliente.tipo" required>
+          <option value="pessoa_fisica">Pessoa Física</option>
+          <option value="pessoa_juridica">Pessoa Jurídica</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="documento">CPF/CNPJ*</label>
+        <input type="text" id="documento" name="documento" class="form-control" [(ngModel)]="novoCliente.cpfCnpj" required mask="000.000.000-00 || 00.000.000/0000-00">
+      </div>
+
+      <!-- Campos opcionais -->
+      <div class="form-group">
+        <label for="rg_ie">RG/IE</label>
+        <input type="text" id="rg_ie" name="rg_ie" class="form-control" [(ngModel)]="novoCliente.rgIe">
+      </div>
+      <div class="form-group">
+        <label for="dataCadastro">Data de Cadastro</label>
+        <input type="date" id="dataCadastro" name="dataCadastro" class="form-control" [(ngModel)]="novoCliente.dataCadastro">
+      </div>
+
+      <!-- Telefones (Mestre-Detalhe) -->
+      <div class="form-group">
+        <label for="telefone">Telefones</label>
+        <div *ngFor="let telefone of novoCliente.telefones; let i = index">
+          <div class="input-group mb-2">
+            <input type="text" class="form-control" placeholder="Telefone" [(ngModel)]="novoCliente.telefones[i]" mask="(00) 00000-0000">
+            <div class="input-group-append">
+              <button class="btn btn-outline-danger" type="button" (click)="removerTelefone(i)">Remover</button>
+            </div>
+          </div>
+        </div>
+        <button class="btn btn-success btn-sm" type="button" (click)="adicionarTelefone()">Adicionar Telefone</button>
+      </div>
+
+      <!-- Ativo -->
+      <div id="aitvoEdt" class="form-group">
+        <input type="checkbox" id="ativo" name="ativo" class="form-check-input" [(ngModel)]="novoCliente.ativo">
+        <label for="ativo">Ativo</label>
+      </div>
+
+      <!-- Botões de ação -->
+      <button type="submit" class="btn btn-success">{{ modoEdicao ? 'Salvar' : 'Adicionar' }}</button>
+      <button type="button" class="btn btn-secondary" (click)="cancelarEdicao()">Cancelar</button>
+    </form>
+  </div>
+</div>
+
+  <!-- Tabela de Clientes -->
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Nome</th>
+        <th>Tipo</th>
+        <th>Documento</th>
+        <th>RG/IE</th>
+        <th>Data de Cadastro</th>
+        <th>Ativo</th>
+        <th>Ações</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- Loop para exibir clientes -->
+      <tr *ngFor="let cliente of clientes | filtroClientes:filtroNome:filtroAtivos">
+        <td>{{ cliente.nome }}</td>
+        <td>{{ cliente.tipo }}</td>
+        <td>{{ cliente.cpfCnpj }}</td>
+        <td>{{ cliente.rgIe }}</td>
+        <td>{{ cliente.dataCadastro | date }}</td>
+        <td>{{ cliente.ativo ? 'Sim' : 'Não' }}</td>
+        <td>
+          <button class="btn btn-secondary btn-sm" (click)="editarCliente(cliente)">Editar</button>
+          <button class="btn btn-danger btn-sm" (click)="excluirCliente(cliente.id)">Excluir</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

@@ -1,0 +1,39 @@
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+  
+  .form-group {
+    margin-bottom: 20px;
+  }
+  
+  .form-check {
+    margin-top: 10px;
+  }
+  
+  .table {
+    width: 100%;
+    margin-top: 20px;
+  }
+  
+  .table th,
+  .table td {
+    text-align: center;
+  }
+  
+  .btn-sm {
+    margin-right: 5px;
+  }
+
+  #aitvoEdt{
+    position: flex;
+    margin-left: 30px;
+  }
+  
+  @media (max-width: 767px) {
+    .container {
+      padding: 10px;
+    }
+  }
+  
